@@ -1,16 +1,19 @@
 pipeline {
     agent any
+    
     environment {
         AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
     }
+
     parameters{
         string(name: 'yourGrettings', defaultValue: 'Hi', description: 'Your grettings phrase')
     }
+
     stages {
         stage('Example') {
             steps {
-                echo '${params.yourGrettings} Mr World Wide'
+                echo "${params.yourGrettings} Mr World Wide"
             }
         }
         stage('Build') {
@@ -29,6 +32,12 @@ pipeline {
             steps {
                 echo 'Deploying....'
             }
+        }
+    }
+    
+    post{
+        failure {
+            mail to: 'mart.cervants@gmail.com', subject: 'The Pipeline failed :('
         }
     }
 }
