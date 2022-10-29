@@ -12,7 +12,7 @@ pipeline {
 
     stages {
         stage('Example') {
-            steps {
+            step {
                 echo "${params.yourGrettings} Mr World Wide"
             }
         }
