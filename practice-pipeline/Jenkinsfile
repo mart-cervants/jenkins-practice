@@ -8,12 +8,14 @@ pipeline {
 
     parameters{
         string(name: 'yourGrettings', defaultValue: 'Hi', description: 'Your grettings phrase')
+        choice(name: 'yourChoice', defaultValue: ["one", "two", 3], description: 'Your grettings phrase')
     }
 
     stages {
         stage('Example') {
-            step {
+            steps {
                 echo "${params.yourGrettings} Mr World Wide"
+                echo "This are my choices: ${params.youChoice}"
             }
         }
         stage('Build') {
@@ -37,7 +39,7 @@ pipeline {
     
     post{
         success {
-            mail(to: 'mart.cervants@gmail.com', subject: 'The Pipeline failed :(', body: 'The Pipeline failed.')
+            mail(to: 'mart.cervants@gmail.com', subject: 'The Pipeline succed :(', body: 'The Pipeline succed.')
         }
     }
 }
