@@ -8,7 +8,7 @@ pipeline {
 
     parameters{
         string(name: 'yourGrettings', defaultValue: 'Hi', description: 'Your grettings phrase')
-        choice(name: 'yourChoice', defaultValue: ["one", "two", 3], description: 'Your grettings phrase')
+        choice(name: 'yourChoice', defaultValue: ["one", "two", "three"], description: 'Pick something')
     }
 
     stages {
