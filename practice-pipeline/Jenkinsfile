@@ -8,14 +8,14 @@ pipeline {
 
     parameters{
         string(name: 'yourGrettings', defaultValue: 'Hi', description: 'Your grettings phrase')
-        choice(name: 'yourChoice', choices: ["one", "two", "three"], description: 'Pick something')
+        choice(name: 'yourChoice', choices: ["one", "two", 3], description: 'Pick something')
     }
 
     stages {
         stage('Example') {
             steps {
                 echo "${params.yourGrettings} Mr World Wide"
-                echo "These are my choices: ${params.youChoice}"
+                echo "These are my choices: ${params.yourChoice}"
             }
         }
         stage('Build') {
