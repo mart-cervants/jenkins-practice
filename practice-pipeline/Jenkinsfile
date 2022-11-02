@@ -8,7 +8,7 @@ pipeline {
 
     parameters{
         string(name: 'yourGrettings', defaultValue: 'Hi', description: 'Your grettings phrase')
-        choice(name: 'yourChoice', choices: ["one", "two", 3], description: 'Pick something')
+        choice(name: 'PLATFORM_FILTER', choices: ['all', 'linux', 'windows', 'mac'], description: 'Pick something')
     }
 
     stages {
@@ -29,6 +29,39 @@ pipeline {
             }
             steps {
                 echo "Hello, ${PERSON}, nice to meet you."
+            }
+        }
+        stage("Example Matrix") {
+            matrix {
+                agent{
+                    label "${PLATFORM}-agent"
+                }
+                when{ anyOf {
+                    expression { params.PLATFORM_FILTER == 'all'}
+                    expression { params.PLATFORM_FILTER == env.PLATFORM}
+                }}  
+                axes {
+                    axis {
+                        name 'PLATFORM'
+                        values 'linux', 'windows', 'mac'
+                    }
+                    axis {
+                        name 'BROWSER'
+                        values 'firefox', 'chrome'
+                    }
+                stages {
+                    stage('Build in Matrix') {
+                        steps {
+                            echo "Do Build for ${PLATFORM} - ${BROWSER}"
+                        }
+                    }
+                    stage('Test in Matrix') {
+                        steps {
+                            echo "Do Test for ${PLATFORM} - ${BROWSER}"
+                        }
+                    }
+                }
+                }  
             }
         }
         stage('Build') {
