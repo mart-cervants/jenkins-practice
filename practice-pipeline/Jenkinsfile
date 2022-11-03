@@ -98,7 +98,7 @@ pipeline {
         stage('BuildAndTest') {
             matrix {
                 agent {
-                    label "${PLATFORM}-agent"
+                    label "${PLATFORM}"
                 }
                 when { anyOf {
                     expression { params.PLATFORM_FILTER == 'all' }
@@ -107,11 +107,11 @@ pipeline {
                 axes {
                     axis {
                         name 'PLATFORM'
-                        values 'linux', 'windows', 'mac'
+                        values 'linux', 'windows',
                     }
                     axis {
                         name 'BROWSER'
-                        values 'firefox', 'chrome', 'safari', 'edge'
+                        values 'chrome', 'safari', 'edge'
                     }
                 }
                 excludes {
