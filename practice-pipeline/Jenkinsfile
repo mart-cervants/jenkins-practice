@@ -1,95 +1,154 @@
+// pipeline {
+//     agent any
+
+//     environment {
+//         AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
+//         AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
+//     }
+
+//     parameters{
+//         string(name: 'yourGrettings', defaultValue: 'Hi', description: 'Your grettings phrase')
+//         choice(name: 'PLATFORM_FILTER', choices: ['all', 'linux', 'windows', 'mac'], description: 'Pick something')
+//     }
+
+//     stages {
+//         stage('Example Parameters') {
+//             steps {
+//                 echo "${params.yourGrettings} Mr World Wide"
+//                 echo "These are my choices: ${params.yourChoice}"
+//             }
+//         }
+//         stage('Example Input') {
+//             input {
+//                 message "Should we continue?"
+//                 ok "Yes, we should."
+//                 submitter "alice,bob"
+//                 parameters {
+//                     string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+//                 }
+//             }
+//             steps {
+//                 echo "Hello, ${PERSON}, nice to meet you."
+//             }
+//         }
+//         stage("Example Matrix") {
+//             matrix {
+//                 agent{
+//                     label "${PLATFORM}-agent"
+//                 }
+//                 when{ anyOf {
+//                     expression { params.PLATFORM_FILTER == 'all'}
+//                     expression { params.PLATFORM_FILTER == env.PLATFORM}
+//                 }}  
+//                 axes {
+//                     axis {
+//                         name 'PLATFORM'
+//                         values 'linux', 'windows', 'mac'
+//                     }
+//                     axis {
+//                         name 'BROWSER'
+//                         values 'firefox', 'chrome'
+//                     }
+//                 stages {
+//                     stage('Build in Matrix') {
+//                         steps {
+//                             echo "Do Build for ${PLATFORM} - ${BROWSER}"
+//                         }
+//                     }
+//                     stage('Test in Matrix') {
+//                         steps {
+//                             echo "Do Test for ${PLATFORM} - ${BROWSER}"
+//                         }
+//                     }
+//                 }
+//                 }  
+//             }
+//         }
+//         stage('Build') {
+//             steps {
+//                 echo 'Building..'
+//                 echo 'AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}'
+//                 echo 'AWS_ACCESS_KEY_ID: ${AWS_SECRET_ACCESS_KEY}'
+//             }
+//         }
+//         stage('Test') {
+//             steps {
+//                 echo 'Testing..'
+//             }
+//         }
+//         stage('Deploy') {
+//             steps {
+//                 echo 'Deploying....'
+//             }
+//         }
+//     }
+    
+//     post{
+//         success {
+//             mail(to: 'mart.cervants@gmail.com', subject: 'The Pipeline succed :(', body: 'The Pipeline succed.')
+//         }
+//     }
+// }
 pipeline {
-    agent any
-
-    environment {
-        AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
+    parameters {
+        choice(name: 'PLATFORM_FILTER', choices: ['all', 'linux', 'windows', 'mac'], description: 'Run on specific platform')
     }
-
-    parameters{
-        string(name: 'yourGrettings', defaultValue: 'Hi', description: 'Your grettings phrase')
-        choice(name: 'PLATFORM_FILTER', choices: ['all', 'linux', 'windows', 'mac'], description: 'Pick something')
-    }
-
+    agent none
     stages {
-        stage('Example Parameters') {
-            steps {
-                echo "${params.yourGrettings} Mr World Wide"
-                echo "These are my choices: ${params.yourChoice}"
-            }
-        }
-        stage('Example Input') {
-            input {
-                message "Should we continue?"
-                ok "Yes, we should."
-                submitter "alice,bob"
-                parameters {
-                    string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+        stage('BuildAndTest') {
+            matrix {
+                agent {
+                    label "${PLATFORM}-agent"
                 }
-            }
-            steps {
-                echo "Hello, ${PERSON}, nice to meet you."
-            }
-        }
-
-        stages{
-            stage("Example Matrix") {
-                matrix {
-                    // agent{
-                    //     label "${PLATFORM}-agent"
-                    // }
-                    // when{ anyOf {
-                    //     expression { params.PLATFORM_FILTER == 'all'}
-                    //     expression { params.PLATFORM_FILTER == env.PLATFORM}
-                    // }}  
-                    axes {
+                when { anyOf {
+                    expression { params.PLATFORM_FILTER == 'all' }
+                    expression { params.PLATFORM_FILTER == env.PLATFORM }
+                } }
+                axes {
+                    axis {
+                        name 'PLATFORM'
+                        values 'linux', 'windows', 'mac'
+                    }
+                    axis {
+                        name 'BROWSER'
+                        values 'firefox', 'chrome', 'safari', 'edge'
+                    }
+                }
+                excludes {
+                    exclude {
                         axis {
                             name 'PLATFORM'
-                            values 'linux', 'windows', 'mac'
+                            values 'linux'
                         }
-                        // axis {
-                        //     name 'BROWSER'
-                        //     values 'firefox', 'chrome'
-                        // }
-                    // stages {
-                    //     stage('Build in Matrix') {
-                    //         steps {
-                    //             echo "Do Build for ${PLATFORM} - ${BROWSER}"
-                    //         }
-                    //     }
-                    //     stage('Test in Matrix') {
-                    //         steps {
-                    //             echo "Do Test for ${PLATFORM} - ${BROWSER}"
-                    //         }
-                    //     }
-                    // }
-                    }  
+                        axis {
+                            name 'BROWSER'
+                            values 'safari'
+                        }
+                    }
+                    exclude {
+                        axis {
+                            name 'PLATFORM'
+                            notValues 'windows'
+                        }
+                        axis {
+                            name 'BROWSER'
+                            values 'edge'
+                        }
+                    }
                 }
-            }            
-        }
-
-        stage('Build') {
-            steps {
-                echo 'Building..'
-                echo 'AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}'
-                echo 'AWS_ACCESS_KEY_ID: ${AWS_SECRET_ACCESS_KEY}'
+                stages {
+                    stage('Build') {
+                        steps {
+                            echo "Do Build for ${PLATFORM} - ${BROWSER}"
+                        }
+                    }
+                    stage('Test') {
+                        steps {
+                            echo "Do Test for ${PLATFORM} - ${BROWSER}"
+                        }
+                    }
+                }
             }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-            }
-        }
-    }
-    
-    post{
-        success {
-            mail(to: 'mart.cervants@gmail.com', subject: 'The Pipeline succed :(', body: 'The Pipeline succed.')
         }
     }
 }
