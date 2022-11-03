@@ -101,10 +101,10 @@ pipeline {
                 // agent {
                 //     label "${PLATFORM}"
                 // }
-                // when { anyOf {
-                //     expression { params.PLATFORM_FILTER == 'all' }
-                //     expression { params.PLATFORM_FILTER == env.PLATFORM }
-                // } }
+                when { anyOf {
+                    expression { params.PLATFORM_FILTER == 'all' }
+                    expression { params.PLATFORM_FILTER == env.PLATFORM }
+                } }
                 axes {
                     axis {
                         name 'PLATFORM'
