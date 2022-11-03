@@ -98,7 +98,7 @@ pipeline {
         stage('BuildAndTest') {
             matrix {
                 agent {
-                    label "${PLATFORM}"
+                    label "${PLATFORM}-agent"
                 }
                 when { anyOf {
                     expression { params.PLATFORM_FILTER == 'all' }
@@ -107,7 +107,7 @@ pipeline {
                 axes {
                     axis {
                         name 'PLATFORM'
-                        values 'linux', 'windows',
+                        values 'linux', 'windows'
                     }
                     axis {
                         name 'BROWSER'
