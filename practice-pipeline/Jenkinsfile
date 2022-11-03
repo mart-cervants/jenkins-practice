@@ -97,10 +97,11 @@ pipeline {
     stages {
         stage('BuildAndTest') {
             matrix {
-                agent any
-                // agent {
-                //     label "${PLATFORM}"
-                // }
+                // agent any
+                agent {
+                    // label "${PLATFORM}"
+                    label "linux"
+                }
                 when { anyOf {
                     expression { params.PLATFORM_FILTER == 'all' }
                     expression { params.PLATFORM_FILTER == env.PLATFORM }
