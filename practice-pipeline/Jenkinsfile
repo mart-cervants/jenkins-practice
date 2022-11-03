@@ -107,11 +107,11 @@ pipeline {
                 axes {
                     axis {
                         name 'PLATFORM'
-                        values 'linux', 'windows'
+                        values 'linux', 'windows', 'mac'
                     }
                     axis {
                         name 'BROWSER'
-                        values 'chrome', 'safari', 'edge'
+                        values 'firefox', 'chrome', 'safari', 'edge'
                     }
                 }
                 excludes {
