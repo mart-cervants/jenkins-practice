@@ -42,25 +42,25 @@ pipeline {
                 }}  
                 axes {
                     axis {
-                        name: 'PLATFORM'
-                        values: 'linux', 'windows', 'mac'
+                        name 'PLATFORM'
+                        values 'linux', 'windows', 'mac'
                     }
-                    axis {
-                        name: 'BROWSER'
-                        values: 'firefox', 'chrome'
-                    }
-                stages {
-                    stage('Build in Matrix') {
-                        steps {
-                            echo "Do Build for ${PLATFORM} - ${BROWSER}"
-                        }
-                    }
-                    stage('Test in Matrix') {
-                        steps {
-                            echo "Do Test for ${PLATFORM} - ${BROWSER}"
-                        }
-                    }
-                }
+                    // axis {
+                    //     name 'BROWSER'
+                    //     values 'firefox', 'chrome'
+                    // }
+                // stages {
+                //     stage('Build in Matrix') {
+                //         steps {
+                //             echo "Do Build for ${PLATFORM} - ${BROWSER}"
+                //         }
+                //     }
+                //     stage('Test in Matrix') {
+                //         steps {
+                //             echo "Do Test for ${PLATFORM} - ${BROWSER}"
+                //         }
+                //     }
+                // }
                 }  
             }
         }
