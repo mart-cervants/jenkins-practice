@@ -42,12 +42,12 @@ pipeline {
                 }}  
                 axes {
                     axis {
-                        name 'PLATFORM'
-                        values 'linux', 'windows', 'mac'
+                        name: 'PLATFORM'
+                        values: 'linux', 'windows', 'mac'
                     }
                     axis {
-                        name 'BROWSER'
-                        values 'firefox', 'chrome'
+                        name: 'BROWSER'
+                        values: 'firefox', 'chrome'
                     }
                 stages {
                     stage('Build in Matrix') {
